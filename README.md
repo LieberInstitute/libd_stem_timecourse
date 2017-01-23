@@ -1,4 +1,4 @@
-AZ stem cell timecourse analysis
+LIBD stem cell timecourse analysis
 ================================
 
-Cloned as a shared github repo at `/dcl01/lieber/ajaffe/lab/az_stem_timecourse`
+Cloned as a shared github repo at `/dcl01/lieber/ajaffe/lab/libd_stem_timecourse`
