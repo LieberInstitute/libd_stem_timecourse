@@ -62,15 +62,11 @@ pd$LibraryBatch  = droplevels(pd$LibraryBatch )
 ## drop unused columns
 pd = pd[,-(19:23)]
 
-save(pd, file="annotated_phenotype_data_stemCellTimecourse.rda"
-## 
+save(pd, file="annotated_phenotype_data_stemCellTimecourse.rda")
 
-## keep low map rate for now...
-boxplot(overallMapRate ~ CONDITION, data=pd)
-boxplot(totalAssignedGene ~ CONDITION, data=pd)
-plot(totalAssignedGene ~ overallMapRate, data=pd)
+#######################
+# load genomic data ###
+load("/dcl01/lieber/ajaffe/Emily/RNAseq-pipeline/Projects/AZpilot_stemcell/rpkmCounts_AZpilot_jan6.hg38_n506.rda")
+load("/dcl01/lieber/ajaffe/Emily/RNAseq-pipeline/Projects/AZpilot_stemcell/rawCounts_AZpilot_jan6.hg38_n506.rda")
 
-plot(totalAssignedGene ~ ERCCsumLogErr, data=pd)
-plot(overallMapRate ~ ERCCsumLogErr, data=pd)
-plot(mitoRate ~ ERCCsumLogErr, data=pd)
-
+## filter to same samples
