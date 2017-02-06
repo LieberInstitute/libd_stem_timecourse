@@ -161,11 +161,11 @@ getRPM = function(rse, target = 80e6) {
 ################
 ## save ########
 
-save(rse_gene, compress=TRUE,
+save(rse_gene, getRPKM, compress=TRUE,
 	file = "../data/libd_stemcell_timecourse_rseGene_n157.rda")
-save(rse_exon, compress=TRUE,
+save(rse_exon, getRPKM, compress=TRUE,
 	file = "../data/libd_stemcell_timecourse_rseExon_n157.rda")
-save(rse_jxn, compress=TRUE,
+save(rse_jxn, getRPM, compress=TRUE,
 	file = "../data/libd_stemcell_timecourse_rseJxn_n157.rda")
 save(rse_tx, compress=TRUE,
 	file = "../data/libd_stemcell_timecourse_rseTx_n157.rda")
