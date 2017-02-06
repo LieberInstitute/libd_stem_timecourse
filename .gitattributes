@@ -1,0 +1,4 @@
+data/libd_stemcell_timecourse_rseExon_n157.rda filter=lfs diff=lfs merge=lfs -text
+data/libd_stemcell_timecourse_rseGene_n157.rda filter=lfs diff=lfs merge=lfs -text
+data/libd_stemcell_timecourse_rseJxn_n157.rda filter=lfs diff=lfs merge=lfs -text
+data/libd_stemcell_timecourse_rseTx_n157.rda filter=lfs diff=lfs merge=lfs -text
