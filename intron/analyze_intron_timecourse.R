@@ -28,15 +28,29 @@ library(RColorBrewer)
 library(ggplot2)
 pca = prcomp(t(intronRpkm))
 
-pdf('stem_cell_intron_timecourse_expression.pdf')
+pdf('stem_cell_strictly_intron_timecourse_expression.pdf')
 ggplot(data = data.frame(pca$x,pd))+
-  geom_point(aes(x=PC1,y=PC2,fill=factor(DAY),shape = DX))+
+ geom_point(aes(x=PC1,y=PC2,fill=factor(DAY),colour = DX),pch =21)+
   scale_fill_brewer(palette = 'PiYG') + 
-  scale_shape_manual(values = c(21,24))
+  scale_colour_manual(values = c('black','red'))
+
+ ggplot(data = data.frame(pca$x,pd))+
+  geom_point(aes(x=PC1,y=PC2,fill=CONDITION),pch =21)+
+  scale_fill_brewer(palette = 'Set1')
+
 
 ggplot(data = data.frame(pca$x,pd),aes(x=DAY,y=PC1))+
   geom_point(pch=21,aes(fill=Donor),position = position_dodge(width = .25))+
   scale_fill_brewer(palette = 'Set1') 
+
+ ggplot(data = data.frame(pca$x,pd),aes(x=totalAssignedIntron,y=PC1))+
+  geom_point(pch=21,aes(fill=Donor),position = position_dodge(width = .25))+
+  scale_fill_brewer(palette = 'Set1')
+
+ ggplot(data = data.frame(pca$x,pd),aes(x=DAY,y=PC2))+
+  geom_point(pch=21,aes(fill=Donor),position = position_dodge(width = .25))+
+  scale_fill_brewer(palette = 'Set1') 
+
 
 pd$meanRpkm = colMeans(intronRpkm)
 ggplot(data = pd,aes(x=DAY,y=meanRpkm,color = Donor))+
