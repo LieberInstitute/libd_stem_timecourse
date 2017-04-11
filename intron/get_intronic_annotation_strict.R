@@ -3,8 +3,8 @@ library('GenomicRanges')
 library('bumphunter')
 library('TxDb.Hsapiens.UCSC.hg19.knownGene')
 #Getting updated functions for annotation written by Leo
-source("/users/ssemick/StemCell/annotateTranscripts_fix.R")
-source("/users/ssemick/StemCell/matchGenes_fix.R")
+source("./annotateTranscripts_fix.R")
+source("./matchGenes_fix.R")
 
 
 load('/dcl01/lieber/ajaffe/Emily/RNAseq-pipeline/Annotation/gs/gs_gencode_v25_hg38.Rdata')

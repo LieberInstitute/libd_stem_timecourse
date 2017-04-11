@@ -4,7 +4,7 @@ dir = '/dcl01/lieber/ajaffe/Emily/RNAseq-pipeline/Projects/AZpilot_stemcell/'
 ##########################################
 # load data files from intron featureCounts
 load('../prep_samples/annotated_phenotype_data_stemCellTimecourse.rda')
-load(paste0(dir,'intron_rpkmCounts_AZpilot_feb22.hg38.intron_n506.rda'))
+load(paste0(dir,'intron_rpkmCounts_AZpilot_mar6.hg38.intron_n506_noAnnotations.rda'))
 
 #################################
 # take only biological replicates
@@ -60,6 +60,9 @@ ggplot(data = pd,aes(x=DAY,y=meanRpkm,color = Donor))+
 ggplot(data = pd,aes(x=DAY,y=totalAssignedIntron,color = Donor))+
   geom_line()+ scale_colour_brewer(palette = 'Set1') +
   ggtitle('Intron Assignment Rate')
+ggplot(data = pd,aes(x=DAY,y=totalAssignedIntron,fill=factor(DAY)))+
+  geom_boxplot()+ scale_colour_brewer(palette = 'Set1') +
+  scale_fill_brewer(palette = 'PiYG')
 dev.off()
 
 
