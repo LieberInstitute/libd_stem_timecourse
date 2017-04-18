@@ -1,7 +1,7 @@
 #Variation on code from: https://github.com/LieberInstitute/RNAseq-pipeline/commit/323e6b1405322b5674a21800f2af969c99d3aeef
 library('GenomicRanges')
+library('GenomicFeatures')
 library('bumphunter')
-library('TxDb.Hsapiens.UCSC.hg19.knownGene')
 #Getting updated functions for annotation written by Leo
 source("./annotateTranscripts_fix.R")
 source("./matchGenes_fix.R")
@@ -19,7 +19,10 @@ strict_introns <- unique( gs_gencode_v25_hg38$fullGenome[gs_gencode_v25_hg38$ful
  chrInfo$isCircular <- rep(c(FALSE, TRUE), c(24, 1))
  si <- with(chrInfo, Seqinfo(as.character(chrom), length, isCircular,
      genome = 'hg38'))
-### Import Gencode Info
+ 
+ 
+###############################
+### Import Gencode Info #######
 gencode_v25 <- rtracklayer::import('/dcl01/lieber/ajaffe/Emily/RNAseq-pipeline/Annotation/GENCODE/GRCh38_hg38/gencode.v25.annotationGRCh38.gtf')
 
 ## Add the chromosome lengths
@@ -35,12 +38,19 @@ mcols(strict_introns) = cbind(mcols(strict_introns), ann)
 #supportedUCSCtables(genome="hg38")
 
 save(strict_introns,file='/users/ssemick/StemCell/rdas/strict_introns_annotation.rda')
+table(strict_introns$subregion)
+strict_introns$strand =NULL
 #rtracklayer::export(strict_introns, '/dcl01/lieber/ajaffe/Emily/RNAseq-pipeline/Projects/AZpilot_stemcell/Introns/introns_GRCh38_annotated.gtf', format = 'gtf')
 #rtracklayer::export(strict_introns, '/dcl01/lieber/ajaffe/Emily/RNAseq-pipeline/Projects/AZpilot_stemcell/Introns/introns_GRCh38_annotated.bed', format = 'bed')
 
 #
-test = strict_introns[1:100]
-#start(test) = start(test)+1
+test = sample(strict_introns,100)
+start(strict_introns) = start(test)+1
 end(test) = end(test)-1
 ann <- matchGenes_fix(as.data.frame(test), subject = genes)
 table(ann$subregion)
+test = test[which(ann$subregion=='covers exon(s)')]
+mcols(test) = mcols(test)$theRegion
+
+rtracklayer::export(test, '/dcl01/lieber/ajaffe/Emily/RNAseq-pipeline/Projects/AZpilot_stemcell/Introns/test_introns.gtf', format = 'gtf')
+
