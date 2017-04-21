@@ -1,0 +1,682 @@
+---
+title: "Stemcell Timecourse: Intronic Expression"
+author: "Badoi and Steve"
+date: "February 26, 2016"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+---
+  
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Set-up
+
+First we load in the RPKM intronic data and the phenotype data for the stem-cells included in this analysis.
+```{r setup and loading}
+#setwd('/dcl01/lieber/ajaffe/lab/libd_stem_timecourse/')
+# intron expression in human stem cells
+dir = '/dcl01/lieber/ajaffe/Emily/RNAseq-pipeline/Projects/AZpilot_stemcell/'
+#load phenotype data
+load('/dcl01/lieber/ajaffe/lab/libd_stem_timecourse/prep_samples/annotated_phenotype_data_stemCellTimecourse.rda')
+# load data files from intron featureCounts
+load(paste0(dir,'intron_rpkmCounts_AZpilot_feb22.hg38.intron_n506.rda'))
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+theme_set(theme_bw(base_size=10) + 
+		  theme(panel.grid.major = element_blank(),
+				panel.grid.minor = element_blank(),
+				 plot.title = element_text(hjust = 0.5),
+				legend.position="none"))  
+```
+
+Then we subset to non-replicates and fix some variable types.
+```{r subsetting and fixing pd}
+# take only biological replicates
+bioInd = which(pd$Class == "Naked genomes")
+pd = pd[bioInd,]
+pd$DAY = as.numeric(pd$DAY)
+pd$DX = factor(pd$DX,levels = c('CNT','SCZ'))
+pd$Donor = factor(pd$Donor)
+pd$totalAssignedIntron = metrics[pd$SAMPLE_ID,'totalAssignedIntron']
+```
+
+The `intronRpkm` object is subsetted to include only the stem-cells of interest.
+```{r subseting intronRpkm object}
+intronRpkm = intronRpkm[,pd$SAMPLE_ID]
+```
+
+## Exploratory Data Analysis
+
+### Average RPKM Distribution
+
+We are interested in the distribution of intronic RPKM because it may help us pick a suitable filter to exclude biologically irrelevant data.
+```{r RPKM Distribution}
+############################## Plot average RPKM distribution before filtering
+#setwd('/users/ssemick/StemCell')
+library(ggplot2)
+intron_rowmean <- as.data.frame(log2(rowMeans(intronRpkm)+1))
+colnames(intron_rowmean) <-"Rowmean"
+rpkm_density <- ggplot(data = intron_rowmean, aes(x = Rowmean)) 
+rpkm_density <- rpkm_density + stat_ecdf(geom = "step", alpha = .8) + 
+							   geom_vline(data= data.frame(Thresholds=c("RPKM=0.1","RPKM=1.0"),vals = c(log2(0.1 +1),log2(1.0 +1))),aes(xintercept=vals, linetype=Thresholds), colour = "black", show.legend=TRUE) +
+							   guides(fill=FALSE) +
+							   labs(x = "Log2(Average RPKM+1)",
+									y = "Density")+
+								theme_bw(base_size = 12) + 
+								theme(plot.title = element_text(hjust = 0.5),
+								panel.grid.major = element_blank(),
+								panel.grid.minor = element_blank(),
+								legend.title=element_text(size=12),
+								legend.text=element_text(size=10),
+								legend.justification=c(1,0), 
+								legend.position=c(.99,.05)) +
+								scale_colour_brewer(palette = "Set1") +
+								scale_fill_brewer(palette = "Set1") +
+								scale_linetype_manual(values=c(2,3)) + 
+								scale_y_continuous(expand = c(0, 0), limits = c(0, 1)) +
+								scale_x_continuous(expand = c(0, 0), limits = c(0, 5))
+							#	coord_cartesian(xlim = c(0, 10)) 
+ggsave(rpkm_density, filename="plots/Intron Distribution.pdf", width=11,height=8.5)
+rpkm_density
+```
+
+### Intronic RPKM Filter
+We decide to filter intron RPKM using a cutoff of 0.1
+
+```{r filter intron RPKM dataframe}
+keepIndex = which(rowMeans(intronRpkm)>0.1)
+intronRpkm = intronRpkm[keepIndex,]
+```
+
+### Exploratory Plots
+
+We performed principle components analysis on the introns that remained after filtering. Then we plotted the PCA components against stem-cell timecourse information. We also checked whether the time biased in-sillico RNA quality measures.
+```{r plotting exploration}
+# make some plots
+library(RColorBrewer)
+library(ggplot2)
+pca = prcomp(t(intronRpkm))
+
+pdf('plots/stem_cell_intron_timecourse_expression.pdf')
+ggplot(data = data.frame(pca$x,pd))+
+  geom_point(aes(x=PC1,y=PC2,fill=factor(DAY),shape = DX))+
+  scale_fill_brewer(palette = 'PiYG') + 
+  scale_shape_manual(values = c(21,24))
+
+ggplot(data = data.frame(pca$x,pd),aes(x=DAY,y=PC1))+
+  geom_point(pch=21,aes(fill=Donor),position = position_dodge(width = .25))+
+  scale_fill_brewer(palette = 'Set1') 
+
+pd$meanRpkm = colMeans(intronRpkm)
+ggplot(data = pd,aes(x=DAY,y=meanRpkm,color = Donor))+
+  geom_line()+ scale_colour_brewer(palette = 'Set1') +
+  ggtitle('Mean RPKM')
+
+ggplot(data = pd,aes(x=DAY,y=totalAssignedIntron,color = Donor))+
+  geom_line()+ scale_colour_brewer(palette = 'Set1') +
+  ggtitle('Intron Assignment Rate')
+dev.off()
+```
+
+## Intronic Expression Across Condition (Factor Model)
+
+We ran a linear model using `limma` to see how different stem-cell conditions, via a non-ordinal factor model, affected intronic expression.
+
+We first subbsetted to the stem-cells of interest.
+```{r factor model setup}
+library(limma)
+library(edgeR)
+load(paste0(dir,'intron_rawCounts_AZpilot_feb22.hg38.intron_n506.rda'))
+pd2<-pd
+intronCounts2<-intronCounts[,pd2$SAMPLE_ID]
+dge <- DGEList(counts = intronCounts2, group = pd2$CONDITION)
+```
+
+The modelling was done on intronic counts *not intronic RPKM*, and we plotted the distribution of intronic counts to find a suitable filtering cutoff. As suggested by the `limma` users guide we filtered based on average counts per million (cpm).
+
+```{r intronic cpm filtering factor model}
+#Plot for filtering cutoff
+intron_count_rowmean <- as.data.frame(log2(rowMeans(cpm(dge))+1))
+colnames(intron_count_rowmean) <-"Rowmean"
+rpkm_density <- ggplot(data = intron_count_rowmean, aes(x = Rowmean)) 
+rpkm_density <- rpkm_density + stat_ecdf(geom = "step", alpha = .8) + 
+							   geom_vline(data= data.frame(Thresholds=c("CPM=0.1","CPM=1.0"),vals = c(log2(0.1 +1),log2(1.0 +1))),aes(xintercept=vals, linetype=Thresholds), colour = "black", show.legend=TRUE) +
+							   guides(fill=FALSE) +
+							   labs(x = "Log2(Average CPM+1)",
+									y = "Density")+
+								theme_bw(base_size = 12) + 
+								theme(plot.title = element_text(hjust = 0.5),
+								panel.grid.major = element_blank(),
+								panel.grid.minor = element_blank(),
+								legend.title=element_text(size=12),
+								legend.text=element_text(size=10),
+								legend.justification=c(1,0), 
+								legend.position=c(.99,.05)) +
+								scale_colour_brewer(palette = "Set1") +
+								scale_fill_brewer(palette = "Set1") +
+								scale_linetype_manual(values=c(2,3)) + 
+								scale_y_continuous(expand = c(0, 0), limits = c(0, 1)) +
+								scale_x_continuous(expand = c(0, 0), limits = c(0, 10))
+							#	coord_cartesian(xlim = c(0, 10)) 
+ggsave(rpkm_density, filename="plots/Intron Count Per Million Distribution.pdf", width=11,height=8.5)
+rpkm_density +ggtitle("Intronic CPM Distribution")
+```
+
+Based on the plotted distribution we choose to use a `cpm` threshold of 0.5, and thus excluded all introns with average cpm less than 0.5 in further analysis.
+```{r cpm factor model intron filter}
+keep <- rowMeans(cpm(dge)) >.5
+pd2$CONDITION <-factor(pd2$CONDITION,levels=c("RENEW","ACC_DORSAL(2)","NPC","ROSETTE","NEURONS_ALONE","NEURONS_PLUS_ASTROS"))
+
+###From user manual
+dge <- dge[keep,,keep.lib.sizes=FALSE]
+```
+
+To normalize intron counts we used limma's `voom` transformation. Our model adjusts for `LINE` and `totalAssignedIntron` (a measure of RNA quality).
+```{r factor model limma with voom}
+#Factor Model
+# Model Matrix
+design = model.matrix(~ pd2$CONDITION  + pd2$LINE +pd2$totalAssignedIntron)
+pdf("plots/Limma_Voom_Introns_Plot.pdf",width=11,height=8.5)
+v <- voom(dge, design, plot=TRUE)
+dev.off()
+```
+
+We then ran a linear model (`lmFit`) through an emprical bayes framework (`eBayes`). We saved out our results and made appropriate plots.
+```{r limma model factor model}
+#Model fitting
+fit <- lmFit(v, design)
+fit2 <- eBayes(fit)
+top <- topTable(fit2, coef=2, sort.by = 'p',number=Inf)
+top<-cbind(top,intronMap[rownames(top),])
+write.csv(top,file="csvs/Introns_Differential_Expression_Results_byCondition_FactorModel.csv")
+DT::datatable(top[1:1000,c('Symbol',colnames(top)[!colnames(top)%in%'Symbol']  ) ])
+```
+
+```{r factor p-value histogram}
+factor_phist <- ggplot(data=top, aes(x=P.Value)) 
+factor_phist <- factor_phist + geom_histogram( binwidth=0.1, 
+								linetype=1, 
+								alpha=.25, 
+								color="black",
+								fill="red") +
+								labs(x="P-value",
+									 y= "Count")+
+								scale_y_continuous() + 
+								scale_x_continuous()
+ggsave(factor_phist, filename = "plots/factor_model_histogram_pvalues.pdf", width=11,height=8.5)
+factor_phist
+```
+
+```{r factor volcano plot}
+top$sig = factor(ifelse(top$adj.P.Val<0.05, "FDR<0.05", "FDR>0.05"),levels=c("FDR<0.05","FDR>0.05"))
+intron_volc <- ggplot(top, aes(logFC, -log10(P.Value))) +
+  geom_point(aes(col=sig)) +
+  theme(legend.justification = c(1, 0), 
+		legend.position = c(1, 0),
+		legend.background = element_rect(fill=NA, size=.5, linetype="solid")) +
+  labs(x = "log2 Fold Change",
+	   y = "-log10(P-value)") + 
+  scale_color_manual(values=c("red", "black")) +
+    scale_y_continuous(expand = c(0, 0), limits = c(0, max(round(-log10(top$P.Value)))+1)) +
+  theme(legend.background = element_rect(colour = "black"),
+        legend.title=element_blank()) #no legend title 
+ggsave(intron_volc, filename = "plots/factor_model_volcano_plot_allConditions.pdf", width=11,height=8.5)
+intron_volc
+```
+
+```{r intronic histogram log2FC}
+histo_intron <- ggplot() + 
+			    geom_histogram(data = top[which(top$logFC < 0 & top$adj.P.Val <0.05), ],
+                          aes(x = 2^abs(logFC), y = -..count..),
+						  binwidth=1,
+						  fill = "blue",
+						  color = "black") +
+#				geom_density(data = top[which(top$logFC < 0 & top$adj.P.Val <0.05), ],
+#							 aes(x = 2^abs(logFC), y=-..count.. )) +  # Overlay with transparent density plot  
+                geom_histogram(data = top[which(top$logFC > 0 & top$adj.P.Val <0.05), ],
+                          aes(x = 2^logFC, y = ..count..),
+						  binwidth=1,
+						  fill = "red",
+						  color = "black")+
+#				geom_density(data = top[which(top$logFC > 0 & top$adj.P.Val <0.05), ])+  # Overlay with transparent density plot  
+			labs(x = "RNA-Seq Fold Change",
+				 y = "Number of DE Introns",
+				 title = "Intronic Differential Expression: \n Factor Model (FDR Cutoff = 5%)")
+ggsave(histo_intron, filename = "plots/factor_model_intron_DE_Histogram.pdf", width=11,height=8.5)
+histo_intron
+```
+
+## Intronic Expression Across Condition (Ordinal Model)
+
+We then repeated our analysis, now with an ordinal model. We used the following series as a first pass: 
+1) RENEW
+2) ACC_DORSAL
+3) NPC
+4) ROSETTE
+5) NEURONS_ALONE
+6) NEURON_PLUS_ASTROS
+
+Set-up the design matrix and `voom` normalize the intron count data.
+```{r ordinal model all conditions voom plot}
+# Model Matrix
+design = model.matrix(~ as.numeric(pd2$CONDITION)  + pd2$LINE +pd2$totalAssignedIntron)
+pdf("plots/Limma_Voom_Introns_Plot_OrdinalFactor.pdf",width=11,height=8.5)
+v <- voom(dge, design, plot=TRUE)
+dev.off()
+```
+
+Fit the ordinal model (all conditions).
+```{r ordinal model all variables model fitting}
+fit <- lmFit(v, design)
+fit2 <- eBayes(fit)
+top <- topTable(fit2, coef=2, sort.by = 'p',number=Inf)
+top<-cbind(top,intronMap[rownames(top),])
+write.csv(top,file="csvs/Introns_Differential_Expression_Results_byCondition_OrdinalModel.csv")
+DT::datatable(top[1:1000, c('Symbol',colnames(top)[!colnames(top)%in%'Symbol']  )])
+```
+
+Several plots for ordinal model.
+
+```{r ordinal all conditions p-value histogram}
+factor_phist <- ggplot(data=top, aes(x=P.Value)) 
+factor_phist <- factor_phist + geom_histogram( binwidth=0.1, 
+								linetype=1, 
+								alpha=.25, 
+								color="black",
+								fill="red") +
+								labs(x="P-value",
+									 y= "Count")+
+								scale_y_continuous() + 
+								scale_x_continuous()
+ggsave(factor_phist, filename = "plots/ordinal_model_histogram_pvalues.pdf", width=11,height=8.5)
+factor_phist
+```
+
+```{r ordinal all conditions volcano plot}
+top$sig = factor(ifelse(top$adj.P.Val<0.05, "FDR<0.05", "FDR>0.05"),levels=c("FDR<0.05","FDR>0.05"))
+intron_volc <- ggplot(top, aes(logFC, -log10(P.Value))) +
+  geom_point(aes(col=sig)) +
+  theme(legend.justification = c(1, 0), 
+		legend.position = c(1, 0),
+		legend.background = element_rect(fill=NA, size=.5, linetype="solid")) +
+  labs(x = "log2 Fold Change",
+	   y = "-log10(P-value)") + 
+  scale_color_manual(values=c("red", "black")) +
+    scale_y_continuous(expand = c(0, 0), limits = c(0, max(round(-log10(top$P.Value)))+1)) +
+  theme(legend.background = element_rect(colour = "black"),
+        legend.title=element_blank()) #no legend title 
+ggsave(intron_volc, filename = "plots/ordinal_model_volcano_plot_allConditions.pdf", width=11,height=8.5)
+intron_volc
+```
+
+```{r ordinal all conditions intronic histogram log2FC}
+histo_intron <- ggplot() + 
+			    geom_histogram(data = top[which(top$logFC < 0 & top$adj.P.Val <0.05), ],
+                          aes(x = 2^abs(logFC), y = -..count..),
+						  binwidth=1,
+						  fill = "blue",
+						  color = "black") +
+#				geom_density(data = top[which(top$logFC < 0 & top$adj.P.Val <0.05), ],
+#							 aes(x = 2^abs(logFC), y=-..count.. )) +  # Overlay with transparent density plot  
+                geom_histogram(data = top[which(top$logFC > 0 & top$adj.P.Val <0.05), ],
+                          aes(x = 2^logFC, y = ..count..),
+						  binwidth=1,
+						  fill = "red",
+						  color = "black")+
+#				geom_density(data = top[which(top$logFC > 0 & top$adj.P.Val <0.05), ])+  # Overlay with transparent density plot  
+			labs(x = "RNA-Seq Fold Change",
+				 y = "Number of DE Introns",
+				 title = "Intronic Differential Expression: \n Factor Model (FDR Cutoff = 5%)")
+ggsave(histo_intron, filename = "plots/ordinal_model_intron_DE_Histogram.pdf", width=11,height=8.5)
+histo_intron
+```
+
+```{r ordinal model boxplots, eval=TRUE}
+counts <- dge$counts
+#residualCounts<-jaffelab::cleaningY(y = counts(ER_dds,normalized=TRUE), mod=mod, P=ncol(mod)-2)
+top$row <- rownames(top)
+res <- as.data.frame(top) %>%
+  arrange(adj.P.Val, P.Value) %>%
+  tbl_df()
+topRes <- res[1:100,]
+
+rownames(pd2) <-pd2$SAMPLE_ID
+goi <- topRes$row
+tcounts <- t(dge$counts[goi,]) %>%
+  merge(pd2, ., by="row.names") %>%
+  gather(key=gene, value=expression, (ncol(.)-length(goi)+1):ncol(.))
+
+pdf("plots/top10Introns_Boxplot_Catalog.pdf")
+for (i in goi) {
+  p <- ggplot(filter(tcounts, gene==i), aes(x=CONDITION, y=expression)) + 
+	   geom_boxplot(outlier.colour = NA, alpha = 0.1, aes(fill = CONDITION)) + 
+		geom_point(alpha = 1, aes(colour = CONDITION), position = position_jitter(width = 0.2)) + 
+		labs(x = "Condition Group", 
+			 y = "Intron Counts",
+			 title = paste0("Intron: ", ifelse(top[i,'Symbol'] !="", top[i,'Symbol'],top[i,'ensemblID']) )) +
+		scale_colour_brewer(palette = "Set1") +
+		scale_fill_brewer(palette = "Set1") + 		
+		theme(axis.text.x = element_text(angle = 45, hjust = 1)) +		
+		geom_text(aes(x=Inf,y=Inf,hjust=1.1,vjust=1.1,label=paste0("p=", signif(top[i,'P.Value'],3) ) ))+
+		scale_y_log10()
+  print(p)
+}
+dev.off() 
+```
+## No ACCDORSAL Ordinal Model
+Next we used a more complex model. First removed all `ACC_DORSAL` stem-cells, then we created a binary variable for astrocytes and combined neurons+astrocytes and neurons without astrocytes into a single condition, using the astrocyte indicator variable to retain the astrocyte information (as a covariate).
+
+```{r No ACCDORSAL Ordinal set up}
+pd2<-pd[pd$CONDITION!="ACC_DORSAL(2)",]
+intronCounts2<-intronCounts[,pd2$SAMPLE_ID]
+
+pd2$CONDITION <-factor(pd2$CONDITION,levels=c("RENEW","NPC","ROSETTE","NEURONS_ALONE","NEURONS_PLUS_ASTROS"))
+pd2$Astrocytes <- ifelse(pd2$CONDITION=="NEURONS_PLUS_ASTROS", "Astrocytes", "No Astrocytes")
+pd2$CONDITION <- plyr::revalue(pd2$CONDITION, c("NEURONS_ALONE"="NEURONS", "NEURONS_PLUS_ASTROS"="NEURONS" ))
+dge <- DGEList(counts = intronCounts2, group = pd2$CONDITION)
+```
+
+We filtered as before `cpm>0.5`.
+```{r filtering ordinal no accdorsal model}
+keep <- rowMeans(cpm(dge)) >.5
+dge <- dge[keep,,keep.lib.sizes=FALSE]
+```
+
+```{r voom plot ordinal model no accdorsal}
+# Model Matrix
+design = model.matrix(~ as.numeric(pd2$CONDITION) + pd2$LINE +pd2$totalAssignedIntron +pd2$Astrocytes)
+pdf("plots/Limma_Voom_Introns_Plot_No_ACCDORSAL_Interaction.pdf",width=11,height=8.5)
+v <- voom(dge, design, plot=TRUE)
+dev.off()
+```
+
+We fit the ordinal model to the non acc_dorsal stemcells. Adjusting for astrocyte presence, intron assignment rate, and line.
+
+```{r model fitting ordinal model no accdorsal}
+#Model fitting
+fit <- lmFit(v, design)
+fit2 <- eBayes(fit)
+top <- topTable(fit2, coef=2, sort.by = 'p',number=Inf)
+top<-cbind(top,intronMap[rownames(top),])
+write.csv(top,file="csvs/Introns_Differential_Expression_Results_byCondition_OrdinalModel_No_ACCDORSAL.csv")
+DT::datatable(top[1:1000, c('Symbol',colnames(top)[!colnames(top)%in%'Symbol']  ) ])
+```
+
+
+```{r ordinal all conditions p-value histogram no_accdorsal}
+factor_phist <- ggplot(data=top, aes(x=P.Value)) 
+factor_phist <- factor_phist + geom_histogram( binwidth=0.1, 
+								linetype=1, 
+								alpha=.25, 
+								color="black",
+								fill="red") +
+								labs(x="P-value",
+									 y= "Count")+
+								scale_y_continuous() + 
+								scale_x_continuous()
+ggsave(factor_phist, filename = "plots/no_accdorsal_ordinal_model_histogram_pvalues.pdf", width=11,height=8.5)
+factor_phist
+```
+
+```{r ordinal all conditions volcano plot no_accdorsal}
+top$sig = factor(ifelse(top$adj.P.Val<0.05, "FDR<0.05", "FDR>0.05"),levels=c("FDR<0.05","FDR>0.05"))
+intron_volc <- ggplot(top, aes(logFC, -log10(P.Value))) +
+  geom_point(aes(col=sig)) +
+  theme(legend.justification = c(1, 0), 
+		legend.position = c(1, 0),
+		legend.background = element_rect(fill=NA, size=.5, linetype="solid")) +
+  labs(x = "log2 Fold Change",
+	   y = "-log10(P-value)") + 
+  scale_color_manual(values=c("red", "black")) +
+    scale_y_continuous(expand = c(0, 0), limits = c(0, max(round(-log10(top$P.Value)))+1)) +
+  theme(legend.background = element_rect(colour = "black"),
+        legend.title=element_blank()) #no legend title 
+ggsave(intron_volc, filename = "plots/no_accdorsal_ordinal_model_volcano_plot_allConditions.pdf", width=11,height=8.5)
+intron_volc
+```
+
+```{r ordinal all conditions intronic histogram log2FC no_accdorsal}
+histo_intron <- ggplot() + 
+			    geom_histogram(data = top[which(top$logFC < 0 & top$adj.P.Val <0.05), ],
+                          aes(x = 2^abs(logFC), y = -..count..),
+						  binwidth=1,
+						  fill = "blue",
+						  color = "black") +
+#				geom_density(data = top[which(top$logFC < 0 & top$adj.P.Val <0.05), ],
+#							 aes(x = 2^abs(logFC), y=-..count.. )) +  # Overlay with transparent density plot  
+                geom_histogram(data = top[which(top$logFC > 0 & top$adj.P.Val <0.05), ],
+                          aes(x = 2^logFC, y = ..count..),
+						  binwidth=1,
+						  fill = "red",
+						  color = "black")+
+#				geom_density(data = top[which(top$logFC > 0 & top$adj.P.Val <0.05), ])+  # Overlay with transparent density plot  
+			labs(x = "RNA-Seq Fold Change",
+				 y = "Number of DE Introns",
+				 title = "Intronic Differential Expression: \n Factor Model (FDR Cutoff = 5%)")
+ggsave(histo_intron, filename = "plots/no_accdorsal_ordinal_model_intron_DE_Histogram.pdf", width=11,height=8.5)
+histo_intron
+```
+
+```{r ordinal model no accdorsal boxplots, eval=TRUE}
+counts <- dge$counts
+#residualCounts<-jaffelab::cleaningY(y = counts(ER_dds,normalized=TRUE), mod=mod, P=ncol(mod)-2)
+
+top$row <- rownames(top)
+res <- as.data.frame(top) %>%
+  arrange(adj.P.Val, P.Value) %>%
+  tbl_df()
+topRes <- res[1:100,]
+
+rownames(pd2) <-pd2$SAMPLE_ID
+goi <- topRes$row
+tcounts <- t(dge$counts[goi,]) %>%
+  merge(pd2, ., by="row.names") %>%
+  gather(key=gene, value=expression, (ncol(.)-length(goi)+1):ncol(.))
+
+theme_set(theme_bw(base_size=10) + 
+		  theme(panel.grid.major = element_blank(),
+				panel.grid.minor = element_blank(),
+				 plot.title = element_text(hjust = 0.5),
+				legend.position="none"))  
+pdf("plots/OrdinalModel_No_ACCDORSAL_AstrocyteFactor_Introns_Boxplot_Catalog.pdf")
+for (i in goi) {
+  p <- ggplot(filter(tcounts, gene==i), aes(x=CONDITION, y=expression)) + 
+	   geom_boxplot(outlier.colour = NA, alpha = 0.1, aes(fill = CONDITION)) + 
+		geom_point(alpha = 1, aes(colour = CONDITION), position = position_jitter(width = 0.2)) + 
+		labs(x = "Condition Group", 
+			 y = "Intron Counts",
+			 title = paste0("Intron: ", ifelse(top[i,'Symbol'] !="", top[i,'Symbol'],top[i,'ensemblID']) )) +
+		scale_colour_brewer(palette = "Set1") +
+		scale_fill_brewer(palette = "Set1") + 		
+		theme(axis.text.x = element_text(angle = 45, hjust = 1)) +		
+		geom_text(aes(x=Inf,y=Inf,hjust=1.1,vjust=1.1,label=paste0("p=", signif(top[i,'P.Value'],3) ) ))+
+		scale_y_log10()
+  print(p)
+}
+dev.off() 
+```
+
+## ACC_DORSAL Only Analysis
+The final model we evaluated was an ordinal model by day, only on the subset of stem-cells belong to the ACC_DORSAL group. ACC_DORSAL denotes accelerated dorsal differentation protocol.
+
+We filtered as above.
+```{r acc_dorsal only setup}
+pd2<-pd[pd$CONDITION=="ACC_DORSAL(2)",]
+intronCounts2<-intronCounts[,pd2$SAMPLE_ID]
+
+dge <- DGEList(counts = intronCounts2, group = pd2$DAY)
+
+keep <- rowMeans(cpm(dge)) >.5
+
+###From user manual
+dge <- dge[keep,,keep.lib.sizes=FALSE]
+```
+
+In this model, we used the `DAY` as the predictor, while adjusting for the effects of LINE and intron assignment rate.
+```{r accdorsal only voom normalization}
+# Model Matrix
+design = model.matrix(~ pd2$DAY + pd2$LINE +pd2$totalAssignedIntron )
+pdf("plots/Limma_Voom_Introns_Plot_ACCDORSAL_byDAY.pdf",width=11,height=8.5)
+v <- voom(dge, design, plot=TRUE)
+dev.off()
+#Model fitting
+```
+
+```{r accdorsal only model fitting}
+fit <- lmFit(v, design)
+fit2 <- eBayes(fit)
+top <- topTable(fit2, coef=2, sort.by = 'p',number=Inf)
+top<-cbind(top,intronMap[rownames(top),])
+write.csv(top,file="csvs/Introns_Differential_Expression_Results_ACCDORSAL_byDAY.csv")
+DT::datatable(top[1:1000,c('Symbol',colnames(top)[!colnames(top)%in%'Symbol']  )])
+```
+
+```{r  p-value histogram accdorsal only}
+factor_phist <- ggplot(data=top, aes(x=P.Value)) 
+factor_phist <- factor_phist + geom_histogram( binwidth=0.1, 
+								linetype=1, 
+								alpha=.25, 
+								color="black",
+								fill="red") +
+								labs(x="P-value",
+									 y= "Count")+
+								scale_y_continuous() + 
+								scale_x_continuous()
+ggsave(factor_phist, filename = "plots/only_accdorsal_day_model_histogram_pvalues.pdf", width=11,height=8.5)
+factor_phist
+```
+
+```{r volcano plot accdorsal only}
+top$sig = factor(ifelse(top$adj.P.Val<0.05, "FDR<0.05", "FDR>0.05"),levels=c("FDR<0.05","FDR>0.05"))
+intron_volc <- ggplot(top, aes(logFC, -log10(P.Value))) +
+  geom_point(aes(col=sig)) +
+  theme(legend.justification = c(1, 0), 
+		legend.position = c(1, 0),
+		legend.background = element_rect(fill=NA, size=.5, linetype="solid")) +
+  labs(x = "log2 Fold Change",
+	   y = "-log10(P-value)") + 
+  scale_color_manual(values=c("red", "black")) +
+    scale_y_continuous(expand = c(0, 0), limits = c(0, max(round(-log10(top$P.Value)))+1)) +
+  theme(legend.background = element_rect(colour = "black"),
+        legend.title=element_blank()) #no legend title 
+ggsave(intron_volc, filename = "plots/only_accdorsal_day_model_volcano_plot_allConditions.pdf", width=11,height=8.5)
+intron_volc
+```
+
+```{r  intronic histogram log2FC accdorsal only}
+histo_intron <- ggplot() + 
+			    geom_histogram(data = top[which(top$logFC < 0 & top$adj.P.Val <0.05), ],
+                          aes(x = 2^abs(logFC), y = -..count..),
+						  binwidth=1,
+						  fill = "blue",
+						  color = "black") +
+#				geom_density(data = top[which(top$logFC < 0 & top$adj.P.Val <0.05), ],
+#							 aes(x = 2^abs(logFC), y=-..count.. )) +  # Overlay with transparent density plot  
+                geom_histogram(data = top[which(top$logFC > 0 & top$adj.P.Val <0.05), ],
+                          aes(x = 2^logFC, y = ..count..),
+						  binwidth=1,
+						  fill = "red",
+						  color = "black")+
+#				geom_density(data = top[which(top$logFC > 0 & top$adj.P.Val <0.05), ])+  # Overlay with transparent density plot  
+			labs(x = "RNA-Seq Fold Change",
+				 y = "Number of DE Introns",
+				 title = "Intronic Differential Expression: \n Factor Model (FDR Cutoff = 5%)")
+ggsave(histo_intron, filename = "plots/only_accdorsal_day_model_intron_DE_Histogram.pdf", width=11,height=8.5)
+histo_intron
+```
+
+
+```{r accdorsal only boxplots,eval=TRUE}
+counts <- dge$counts
+
+#residualCounts<-jaffelab::cleaningY(y = counts(ER_dds,normalized=TRUE), mod=mod, P=ncol(mod)-2)
+
+top$row <- rownames(top)
+res <- as.data.frame(top) %>%
+  arrange(adj.P.Val, P.Value) %>%
+  tbl_df()
+topRes <- res[1:100,]
+
+rownames(pd2) <-pd2$SAMPLE_ID
+goi <- topRes$row
+tcounts <- t(dge$counts[goi,]) %>%
+  merge(pd2, ., by="row.names") %>%
+  gather(key=gene, value=expression, (ncol(.)-length(goi)+1):ncol(.))
+
+pdf("plots/ACCDORSAL_byDAY_Introns_Boxplot_Catalog.pdf")
+for (i in goi) {
+  p <- ggplot(filter(tcounts, gene==i), aes(x=factor(DAY), y=expression)) + 
+	   geom_boxplot(outlier.colour = NA, alpha = 0.1, aes(fill = factor(DAY))) + 
+		geom_point(alpha = 1, aes(colour = factor(DAY)), position = position_jitter(width = 0.2)) + 
+		labs(x = "Day", 
+			 y = "Intron Counts",
+			 title = paste0("Accelerated Dorsal Differentiation Intron: \n", ifelse(top[i,'Symbol'] !="", top[i,'Symbol'],top[i,'ensemblID']) )) +
+		scale_colour_brewer(palette = "Set1") +
+		scale_fill_brewer(palette = "Set1") + 		
+		theme(axis.text.x = element_text(angle = 0, hjust = 1)) +		
+		geom_text(aes(x=Inf,y=Inf,hjust=1.1,vjust=1.1,label=paste0("p=", signif(top[i,'P.Value'],3) ) ))+
+		scale_y_log10()
+  print(p)
+}
+dev.off() 
+
+pdf("plots/ACCDORSAL_byDAY_Introns_Boxplot_Catalog_bySchizo.pdf")
+for (i in goi) {
+  p <- ggplot(filter(tcounts, gene==i), aes(x=factor(DAY), y=expression,fill=DX,colour=DX)) + 
+	   geom_boxplot(outlier.colour = NA, alpha = 0.1,colour="black") + 
+		geom_point(alpha = 1, position = position_jitterdodge()) + 
+		labs(x = "Day", 
+			 y = "Intron Counts",
+			 title = paste0("Accelerated Dorsal Differentiation Intron: \n", ifelse(top[i,'Symbol'] !="", top[i,'Symbol'],top[i,'ensemblID']) )) +
+		scale_colour_brewer(palette = "Set1") +
+		scale_fill_brewer(palette = "Set1") + 		
+		theme(axis.text.x = element_text(angle = 0, hjust = 1)) +
+		theme(legend.justification=c(0,0), legend.position=c(0,0)) +
+        theme(legend.background = element_rect(colour = "black")) + 
+		geom_text(aes(x=Inf,y=Inf,hjust=1.1,vjust=1.1,label=paste0("p=", signif(top[i,'P.Value'],3) ) ), color='black')+
+		scale_y_log10()
+  print(p)
+}
+dev.off() 
+```
+
+## Comparing Models
+Lastly, we compared the results of the ACC_DORSAL model (using day as the predictor) against the results of the model on the data excluding acc_dorsal, recoding astrocytes and neurons into two seperate variables.
+
+First we load the results for both models and merge them into a single data.frame.
+```{r accdorsal only vs. no accdorsal setup}
+#################### Comparison of Results between ACC Dorsal and All others
+ACC_DORSAL <- read.csv("csvs/Introns_Differential_Expression_Results_ACCDORSAL_byDAY.csv")
+Normal_SC <- read.csv("csvs/Introns_Differential_Expression_Results_byCondition_OrdinalModel_No_ACCDORSAL.csv")
+colnames(ACC_DORSAL) <- paste0("ACC_DORSAL_",colnames(ACC_DORSAL))
+colnames(Normal_SC) <- paste0("Normal_SC_",colnames(Normal_SC))
+###
+library(data.table)
+ACC_DORSAL<-as.data.table(ACC_DORSAL)
+Normal_SC<-as.data.table(Normal_SC)
+
+## Merging the different data results using data.table
+Both_SC <- merge(ACC_DORSAL,
+                 Normal_SC,
+                 by.x="ACC_DORSAL_X",
+                 by.y="Normal_SC_X",
+                 all=FALSE)
+```
+
+We test the correlation of their t.statistics.
+```{r acc dorsal vs no acc dorsal cor.test}
+cor.test(Both_SC$ACC_DORSAL_t,Both_SC$Normal_SC_t )
+```
+
+```{r plotting accdorsal vs no accdorsal}
+# Make the plot
+p <- ggplot(data =Both_SC, aes(x=Normal_SC_t, y = ACC_DORSAL_t ) )
+p <- p +  stat_binhex(bins=50) +		
+geom_text(aes(x=Inf,y=Inf,hjust=1.1,vjust=1.1,label=paste0("cor=", signif(cor.test(Both_SC$ACC_DORSAL_t,Both_SC$Normal_SC_t)$estimate,3) ) ), color='black')
+ggsave(p, filename="plots/ACC_DORSAL_versus_Normal_SC_Scatter_tplot.pdf",width=11,height=8.5)
+p
+```
