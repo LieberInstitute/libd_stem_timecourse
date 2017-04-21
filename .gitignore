@@ -1,6 +1,8 @@
 ## Ignore the large data files
 data
+qc_checks/genotype_check/AZPILOT_5_Clinical_Study_genotypes_5666161snps_imputed20140915_Straub040417.bim
 
+## Other directories...
 allen_singleCell/
 cortecon/
 tc_analysis/
