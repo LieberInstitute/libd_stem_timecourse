@@ -1,2 +1,6 @@
 ## Ignore the large data files
 data
+
+allen_singleCell/
+cortecon/
+tc_analysis/
