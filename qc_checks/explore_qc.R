@@ -24,6 +24,52 @@ pd$color[pd$RNA_NO=="R16-054"] = "#E69500"  # orange
 pd$color[pd$RNA_NO=="R16-073"] = "#E7298A"  # pink
 
 
+############################
+## pca ########
+
+pca1 = prcomp(t(ffGene[,11:13]))
+pcaVars1 = getPcaVars(pca1)
+
+pdf("pca_voom.pdf")
+par(mar=c(5,6,4,2),cex.axis=2,cex.lab=2,cex.main=2)
+palette(brewer.pal(8,"Dark2"))
+plot(pca1$x, pch = 21, bg=as.numeric(factor(pd$SPECIES)),cex=2, main="Gene PCs",
+     xlab=paste0("PC1: ", pcaVars1[1], "% Var Expl"),
+     ylab=paste0("PC2: ", pcaVars1[2], "% Var Expl"))
+legend("bottomleft", paste0(levels(factor(pd$SPECIES))),
+       pch = 15, col = 1:8,cex=1.2)
+dev.off()
+
+pdf("pca_log2Rpkm_geneRpkm.pdf")
+par(mar=c(5,6,4,2),cex.axis=.75,cex.lab=1.5,cex.main=2)
+palette(brewer.pal(6,"Dark2"))
+plot(pd$totalAssignedGene, pca1$x[,1],
+	 pch = ifelse(pd$SPECIES=="RAT",23,21), bg=as.numeric(factor(pd$Donor)),
+	 cex=2, main="Gene PCs",
+     ylab=paste0("PC1: ", pcaVars1[1], "% Var Expl"),
+     xlab= "Gene Assignment Rate")
+legend("bottomleft", paste0("Donor: ", levels(factor(pd$Donor))),
+       pch = 15, col = 1:6,cex=.9)
+plot(pd$totalAssignedGene, pca1$x[,2],
+	 pch = ifelse(pd$SPECIES=="RAT",23,21), bg=as.numeric(factor(pd$Donor)),
+	 cex=2, main="Gene PCs",
+     ylab=paste0("PC2: ", pcaVars1[2], "% Var Expl"),
+     xlab= "Gene Assignment Rate")
+plot(pd$overallMapRate, pca1$x[,1],
+	 pch = ifelse(pd$SPECIES=="RAT",23,21), bg=as.numeric(factor(pd$Donor)),
+	 cex=2, main="Gene PCs",
+     ylab=paste0("PC1: ", pcaVars1[1], "% Var Expl"),
+     xlab= "Map Rate")
+plot(pd$overallMapRate, pca1$x[,2],
+	 pch = ifelse(pd$SPECIES=="RAT",23,21), bg=as.numeric(factor(pd$Donor)),
+	 cex=2, main="Gene PCs",
+     ylab=paste0("PC2: ", pcaVars1[2], "% Var Expl"),
+     xlab= "Map Rate")	 
+dev.off()
+###############################################################
+
+
+###############################################################
 ####### compare ERCC spike-ins to expected concentrations #########
 ### expected ercc concentration
 spikeIns = read.delim("/users/ajaffe/Lieber/Projects/RNAseq/Ribozero_Compare/ercc_actual_conc.txt",
