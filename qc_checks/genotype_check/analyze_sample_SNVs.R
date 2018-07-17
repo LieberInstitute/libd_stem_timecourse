@@ -5,10 +5,26 @@ library(pheatmap)
 library(RColorBrewer)
 col.pal = brewer.pal(9,"Blues")
 
+
+# ##########################
+# #### pd with all n = 506
+# library(readxl)
+# pd = read_excel("/dcl01/lieber/ajaffe/lab/libd_stem_timecourse/prep_samples/MASTER_AZ_RNA-seq_10NOV_2016.xlsx")
+# pd = pd[!is.na(pd$Library),]
+# pd$SampleID = paste0(pd$RNA_NO,"_",pd$Flowcell)
+# ## put in order
+# ord = read.csv("/dcl01/lieber/ajaffe/Emily/RNAseq-pipeline/Projects/AZpilot_stemcell/read_and_alignment_metrics_AZpilot_jan6.hg38_n506.csv", stringsAsFactors=FALSE)
+# ord$RNA = ss(ord$SAMPLE_ID, "_",1)
+# ord$RNA = gsub("-rerun", "", ord$RNA)
+# ord$RNA = gsub("rerun", "", ord$RNA)
+# ord$FC = ss(ord$SAMPLE_ID, "_",2)
+# ord$id = paste0(ord$RNA,"_",ord$FC)
+# pd = pd[match(ord$id, pd$SampleID),]
+
 ##########################
-### pd file / sample IDs
+### pd file / sample IDs for n = 157
 load("/dcl01/lieber/ajaffe/lab/libd_stem_timecourse/data/libd_stemcell_timecourse_rseGene_n157.rda")
-pd = colData(rse_gene)[,2:24]
+pd = colData(rse_gene)[,1:24]
 
 ## sample indexes of 157 samples used in analyses (from 506 original samples)
 id506 = read.table("/dcl01/lieber/ajaffe/Emily/RNAseq-pipeline/Projects/AZpilot_stemcell/SAMPLE_IDs.txt", stringsAsFactors=FALSE)
@@ -46,6 +62,7 @@ snpCor = cor(snps, use="pairwise.complete.obs")
 
 rownames(snpCor) = colnames(snpCor) = paste0(pd$RNA_NO,"_",pd$Donor)
 rownames(snpCor)[pd$SPECIES=="HUMAN_RAT"] = colnames(snpCor)[pd$SPECIES=="HUMAN_RAT"] = paste0(pd$RNA_NO[pd$SPECIES=="HUMAN_RAT"],"_",pd$Donor[pd$SPECIES=="HUMAN_RAT"], "_H+R")
+rownames(snpCor)[pd$SPECIES=="RAT"] = colnames(snpCor)[pd$SPECIES=="RAT"] = paste0(pd$RNA_NO[pd$SPECIES=="RAT"],"_",pd$Donor[pd$SPECIES=="RAT"], "_Rat")
 
 pdf("pheatmap_version_badoi.pdf",h=20,w=20)
 pheatmap(snpCor, 
@@ -53,6 +70,13 @@ pheatmap(snpCor,
 		cluster_cols=T,
 		color=col.pal)
 dev.off()
+
+# pdf("pheatmap_n506.pdf",h=50,w=50)
+# pheatmap(snpCor, 
+		# cluster_rows=T, 
+		# cluster_cols=T,
+		# color=col.pal)
+# dev.off()
 
 
 

@@ -1,8 +1,33 @@
-## Ignore the large data files
-data
-qc_checks/genotype_check/AZPILOT_5_Clinical_Study_genotypes_5666161snps_imputed20140915_Straub040417.bim
-
-## Other directories...
+## Directories with mostly large files (force add individual files)
 allen_singleCell/
+brennand_nature_check/
+data/
 cortecon/
+intron/
+otherData/
+rn6_pipe/
+scorecard/
+SNX19/
 tc_analysis/
+yeo_singleCell/
+ziller/
+
+## Subdirectory names
+*/FASTQ
+*/*/FASTQ
+*/logs
+*/*/logs
+*/preprocessed_data/
+*/*/preprocessed_data/
+
+## Large file types
+*.pptx
+*/*.bam
+*/*/*.bam
+*/*/*/*.bam
+*/*.fq.*
+*/*/*.fq.*
+*/*/*/*.fq.*
+*/*.fastq.*
+*/*/*.fastq.*
+*/*/*/*.fastq.*

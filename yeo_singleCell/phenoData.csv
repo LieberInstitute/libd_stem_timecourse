@@ -1,0 +1,215 @@
+Run,Sample_Name,SRA_Study,Organism,gender,Library,sample_type,source,cell_type
+SRR4047245,GSM2286986,SRP082522,Homo_sapiens,male,SINGLE,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047246,GSM2286987,SRP082522,Homo_sapiens,male,SINGLE,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047247,GSM2286988,SRP082522,Homo_sapiens,male,SINGLE,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047248,GSM2286989,SRP082522,Homo_sapiens,male,SINGLE,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047249,GSM2286990,SRP082522,Homo_sapiens,male,SINGLE,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047250,GSM2286991,SRP082522,Homo_sapiens,male,SINGLE,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047251,GSM2286992,SRP082522,Homo_sapiens,male,SINGLE,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047252,GSM2286993,SRP082522,Homo_sapiens,male,SINGLE,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047253,GSM2286994,SRP082522,Homo_sapiens,male,SINGLE,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047254,GSM2286995,SRP082522,Homo_sapiens,male,SINGLE,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047255,GSM2286996,SRP082522,Homo_sapiens,male,SINGLE,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047256,GSM2286997,SRP082522,Homo_sapiens,male,SINGLE,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047257,GSM2286998,SRP082522,Homo_sapiens,male,SINGLE,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047258,GSM2286999,SRP082522,Homo_sapiens,male,SINGLE,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047259,GSM2287000,SRP082522,Homo_sapiens,male,SINGLE,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047260,GSM2287001,SRP082522,Homo_sapiens,male,SINGLE,Pooled,iPSC-derived neural progenitor cells,NPC
+SRR4047261,GSM2287002,SRP082522,Homo_sapiens,male,SINGLE,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047262,GSM2287003,SRP082522,Homo_sapiens,male,SINGLE,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047263,GSM2287004,SRP082522,Homo_sapiens,male,SINGLE,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047264,GSM2287005,SRP082522,Homo_sapiens,male,SINGLE,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047265,GSM2287006,SRP082522,Homo_sapiens,male,SINGLE,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047266,GSM2287007,SRP082522,Homo_sapiens,male,SINGLE,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047267,GSM2287008,SRP082522,Homo_sapiens,male,SINGLE,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047268,GSM2287009,SRP082522,Homo_sapiens,male,SINGLE,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047269,GSM2287010,SRP082522,Homo_sapiens,male,SINGLE,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047270,GSM2287011,SRP082522,Homo_sapiens,male,SINGLE,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047271,GSM2287012,SRP082522,Homo_sapiens,male,SINGLE,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047272,GSM2287013,SRP082522,Homo_sapiens,male,SINGLE,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047273,GSM2287014,SRP082522,Homo_sapiens,male,SINGLE,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047274,GSM2287015,SRP082522,Homo_sapiens,male,SINGLE,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047275,GSM2287016,SRP082522,Homo_sapiens,male,SINGLE,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047276,GSM2287017,SRP082522,Homo_sapiens,male,SINGLE,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047277,GSM2287018,SRP082522,Homo_sapiens,male,SINGLE,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047278,GSM2287019,SRP082522,Homo_sapiens,male,SINGLE,Pooled,iPSC-derived neural progenitor cells,NPC
+SRR4047279,GSM2287020,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047280,GSM2287021,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047281,GSM2287022,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047282,GSM2287023,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047283,GSM2287024,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047284,GSM2287025,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047285,GSM2287026,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047286,GSM2287027,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047287,GSM2287028,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047288,GSM2287029,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047289,GSM2287030,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047290,GSM2287031,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047291,GSM2287032,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047292,GSM2287033,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047293,GSM2287034,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047294,GSM2287035,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047295,GSM2287036,SRP082522,Homo_sapiens,male,PAIRED,Pooled,iPSC-derived motor neurons,MN
+SRR4047296,GSM2287037,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047297,GSM2287038,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047298,GSM2287039,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047299,GSM2287040,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047300,GSM2287041,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047301,GSM2287042,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047302,GSM2287043,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047303,GSM2287044,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047304,GSM2287045,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047305,GSM2287046,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047306,GSM2287047,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047307,GSM2287048,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047308,GSM2287049,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047309,GSM2287050,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047310,GSM2287051,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047311,GSM2287052,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047312,GSM2287053,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047313,GSM2287054,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047314,GSM2287055,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047315,GSM2287056,SRP082522,Homo_sapiens,male,PAIRED,Pooled,iPSC-derived motor neurons,MN
+SRR4047316,GSM2287057,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047317,GSM2287058,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047318,GSM2287059,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047319,GSM2287060,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047320,GSM2287061,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047321,GSM2287062,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047322,GSM2287063,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047323,GSM2287064,SRP082522,Homo_sapiens,male,PAIRED,Pooled,iPSC-derived motor neurons,MN
+SRR4047324,GSM2287065,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047325,GSM2287066,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047326,GSM2287067,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047327,GSM2287068,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047328,GSM2287069,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047329,GSM2287070,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047330,GSM2287071,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047331,GSM2287072,SRP082522,Homo_sapiens,male,PAIRED,Pooled,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047332,GSM2287073,SRP082522,Homo_sapiens,male,PAIRED,Pooled,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047333,GSM2287074,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047334,GSM2287075,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047335,GSM2287076,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047336,GSM2287077,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047337,GSM2287078,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047338,GSM2287079,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047339,GSM2287080,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047340,GSM2287081,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047341,GSM2287082,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047342,GSM2287083,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047343,GSM2287084,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047344,GSM2287085,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047345,GSM2287086,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047346,GSM2287087,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047347,GSM2287088,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047348,GSM2287089,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047349,GSM2287090,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047350,GSM2287091,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047351,GSM2287092,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047352,GSM2287093,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047353,GSM2287094,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived motor neurons,MN
+SRR4047354,GSM2287095,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047355,GSM2287096,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047356,GSM2287097,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047357,GSM2287098,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047358,GSM2287099,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047359,GSM2287100,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047360,GSM2287101,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047361,GSM2287102,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047362,GSM2287103,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047363,GSM2287104,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047364,GSM2287105,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047365,GSM2287106,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047366,GSM2287107,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047367,GSM2287108,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047368,GSM2287109,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047369,GSM2287110,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047370,GSM2287111,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047371,GSM2287112,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047372,GSM2287113,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047373,GSM2287114,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047374,GSM2287115,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047375,GSM2287116,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047376,GSM2287117,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047377,GSM2287118,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047378,GSM2287119,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047379,GSM2287120,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047380,GSM2287121,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047381,GSM2287122,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047382,GSM2287123,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047383,GSM2287124,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047384,GSM2287125,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047385,GSM2287126,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047386,GSM2287127,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047387,GSM2287128,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047388,GSM2287129,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047389,GSM2287130,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047390,GSM2287131,SRP082522,Homo_sapiens,male,PAIRED,Pooled,iPSC-derived neural progenitor cells,NPC
+SRR4047391,GSM2287132,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047392,GSM2287133,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047393,GSM2287134,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047394,GSM2287135,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047395,GSM2287136,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,iPSC-derived neural progenitor cells,NPC
+SRR4047396,GSM2287137,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047397,GSM2287138,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047398,GSM2287139,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047399,GSM2287140,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047400,GSM2287141,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047401,GSM2287142,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047402,GSM2287143,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047403,GSM2287144,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047404,GSM2287145,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047405,GSM2287146,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047406,GSM2287147,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047407,GSM2287148,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047408,GSM2287149,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047409,GSM2287150,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047410,GSM2287151,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047411,GSM2287152,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047412,GSM2287153,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047413,GSM2287154,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047414,GSM2287155,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047415,GSM2287156,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047416,GSM2287157,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047417,GSM2287158,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047418,GSM2287159,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047419,GSM2287160,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047420,GSM2287161,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047421,GSM2287162,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047422,GSM2287163,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047423,GSM2287164,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047424,GSM2287165,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047425,GSM2287166,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047426,GSM2287167,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047427,GSM2287168,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047428,GSM2287169,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047429,GSM2287170,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047430,GSM2287171,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047431,GSM2287172,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047432,GSM2287173,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047433,GSM2287174,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047434,GSM2287175,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047435,GSM2287176,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047436,GSM2287177,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047437,GSM2287178,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047438,GSM2287179,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047439,GSM2287180,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047440,GSM2287181,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047441,GSM2287182,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047442,GSM2287183,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047443,GSM2287184,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047444,GSM2287185,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047445,GSM2287186,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047446,GSM2287187,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047447,GSM2287188,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047448,GSM2287189,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047449,GSM2287190,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047450,GSM2287191,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047451,GSM2287192,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047452,GSM2287193,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047453,GSM2287194,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047454,GSM2287195,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047455,GSM2287196,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047456,GSM2287197,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047457,GSM2287198,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC
+SRR4047458,GSM2287199,SRP082522,Homo_sapiens,male,PAIRED,Single_Cell,Skin fibroblast-derived induced pluripotent cells (iPSCs),iPSC

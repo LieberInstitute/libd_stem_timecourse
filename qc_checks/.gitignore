@@ -1,0 +1,5 @@
+##
+genotype_check/*.bed
+genotype_check/*.bim
+genotype_check/*.fam
+pheatmap_n506.pdf

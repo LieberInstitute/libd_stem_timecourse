@@ -8,6 +8,7 @@ library(rafalib)
 MAINDIR = '/dcl01/lieber/ajaffe/lab/libd_stem_timecourse'
 load(file.path(MAINDIR,"data/libd_stemcell_timecourse_rseGene_n146.rda"))
 
+geneCounts = assays(rse_gene)$counts
 geneRpkm = getRPKM(rse_gene)
 geneMap = rowData(rse_gene)
 
@@ -17,16 +18,26 @@ pd$REP[is.na(pd$REP)] = 1
 pd$DAY = ordered(pd$DAY, levels=sort(as.numeric(levels(as.factor(pd$DAY)))) )
 pd$DIV = as.numeric(as.character(pd$DAY))
 pd$EXPERIMENT[pd$EXPERIMENT=="TIMECOURSE1"] = "TIMECOURSE"
+pd$LINE = gsub('-','_',pd$LINE)
 
-## don't use technical replicates or RENEW controls in analyses
-bioInd = which(pd$Class == "Naked genomes" & pd$CONDITION!="RENEW")
+## don't use technical replicates
+bioInd = which(pd$Class == "Naked genomes")
 pd = pd[bioInd,]
 geneRpkm = geneRpkm[,bioInd]
+geneCounts = geneCounts[,bioInd]   # n=128
+
+## don't use RENEW controls or NEURONS_ALONE in analyses
+dropInd = which(pd$CONDITION %in% c("RENEW","NEURONS_ALONE"))
+pd = pd[-dropInd,]
+geneRpkm = geneRpkm[,-dropInd]
+geneCounts = geneCounts[,-dropInd]   # n=106
+
 
 pd$COND = pd$CONDITION
-pd$COND[grep("NEURON",pd$COND)] = "NEURON"  ## combine on/off astros
+pd$COND[grep("NEURON",pd$COND)] = "NEURON"  ## rename NEURONS_PLUS_ASTROS
+pd$COND[grep("ACC_DORSAL",pd$COND)] = "ACC_DORSAL"  ## rename ACC_DORSAL(2)
 pd$COND = as.factor(pd$COND)
-pd$COND = factor(pd$COND,levels(pd$COND)[c(1,3,4,2)])  ## put levels in order (AD, NPC, ROSE, NEU, RENEW)
+pd$COND = factor(pd$COND,levels(pd$COND)[c(1,3,4,2)])  ## put levels in order
 
 
 ###########################
@@ -34,6 +45,7 @@ pd$COND = factor(pd$COND,levels(pd$COND)[c(1,3,4,2)])  ## put levels in order (A
 geneMap$meanExprs = rowMeans(geneRpkm)
 gIndex = which(geneMap$meanExprs > 0.1)
 geneRpkm = geneRpkm[gIndex,]
+geneCounts = geneCounts[gIndex,]
 geneMap = geneMap[gIndex,]
 map = geneMap
 
@@ -132,6 +144,7 @@ save(out, file="rda/lmer_outStats.rda")
 
 load("rda/lmer_outStats.rda")
 load("rda/voom_factor.rda")
+load("rda/voom_factor_contrasts.rda")
 
 lmerStats = out
 
@@ -160,5 +173,35 @@ plot(lmerStats$anovaF, voomStats$F,
 	xlab = "F-statistic LME",
 	ylab = "F-statistic voom")
 abline(0,1,col="darkgrey")
+plot(log2(lmerStats$anovaF+1), log2(voomStats$F+1),
+	main = "ANOVA F Stat",
+	xlab = "log F-statistic LME",
+	ylab = "log F-statistic voom")
+abline(0,1,col="darkgrey")
 dev.off()
+
+
+pdf("voom_contrasts_vs_lme.pdf",h=10,w=10)
+par(mfrow=c(2,2),mar=c(5,6,5,2),cex.axis=1,cex.lab=1.5,cex.main=1.8)
+palette(brewer.pal(4,"Dark2"))
+plot(lmerStats$t_NPC, voomStatsC$"t_NPC-ACC_DORSAL",
+	main = "NPC vs ACC_DORSAL",
+	xlab = "t-statistic LME",
+	ylab = "t-statistic voom NPC-AD")
+abline(0,1,col="darkgrey")
+plot(lmerStats$t_ROSETTE, (voomStatsC$"t_ROSETTE-NPC" + voomStatsC$"t_NPC-ACC_DORSAL"),
+	main = "ROSETTE vs ACC_DORSAL",
+	xlab = "t-statistic LME",
+	ylab = "t-statistic voom ROS-NPC + NPC-AD")
+abline(0,1,col="darkgrey")
+plot(lmerStats$t_NEURON, 
+	(voomStatsC$"t_NEURON-ROSETTE" + voomStatsC$"t_ROSETTE-NPC" + voomStatsC$"t_NPC-ACC_DORSAL"),
+	main = "NEURON vs ACC_DORSAL",
+	xlab = "t-statistic LME",
+	ylab = "t-statistic voom NEU-ROS + ROS-NPC + NPC-AD")
+abline(0,1,col="darkgrey")
+
+
+dev.off()
+
 
