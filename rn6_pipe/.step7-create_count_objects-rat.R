@@ -98,6 +98,43 @@ if (opt$ercc == TRUE ){
 	}
 ############################################################
 
+
+# ############################################################ 
+# ###### salmon quantification
+
+sampIDs = as.vector(metrics$SAMPLE_ID)
+
+##observed tpm and number of reads
+txTpm = bplapply(sampIDs, function(x) {
+	read.table(file.path(opt$maindir, "Salmon_tx_rn6", x, "quant.sf"),header = TRUE)$TPM }, 
+	BPPARAM = MulticoreParam(opt$cores))
+txTpm = do.call(cbind,txTpm)
+
+txNumReads = bplapply(sampIDs, function(x) {
+	read.table(file.path(opt$maindir, "Salmon_tx_rn6", x, "quant.sf"),header = TRUE)$NumReads }, 
+	BPPARAM = MulticoreParam(opt$cores))
+txNumReads = do.call(cbind,txNumReads)
+
+colnames(txTpm) = colnames(txNumReads) = sampIDs
+
+##get names of transcripts
+txNames = read.table(file.path(opt$maindir, "Salmon_tx_rn6", sampIDs[1], "quant.sf"),
+						header = TRUE)$Name
+txNames = as.character(txNames)
+txMap = t(ss(txNames, "\\|",c(1,7,2,6,8)))
+txMap = as.data.frame(txMap)
+rm(txNames)
+colnames(txMap) = c("gencodeTx","txLength","gencodeID","Symbol","gene_type")
+
+rownames(txMap) = rownames(txTpm) = rownames(txNumReads) = txMap$gencodeTx
+
+save(txTpm, txNumReads, txMap, file="tx_timecourse_rat_rn6_n36.Rdata")
+
+# ############################################################ 
+
+
+
+
 ### add bam file
 metrics$bamFile <- file.path(opt$maindir, 'HISAT2_out', paste0(metrics$SAMPLE_ID, '_accepted_hits.sorted.bam'))
 

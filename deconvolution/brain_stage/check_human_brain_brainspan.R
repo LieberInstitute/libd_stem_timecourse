@@ -486,3 +486,22 @@ legend("top", colnames(pasca_PropEsts), pch = 15,
 	col = 1:8,bg="white", nc = 4,cex=1.5,pt.cex=2)
 axis(2, at=seq(0,1,by=0.25))
 dev.off()
+
+
+
+
+
+
+
+
+##################################################
+########## Add symbols to table
+##################################################
+# load("iPSC_BrainSpan_coefEsts_calibration_Zscore.rda", verbose=TRUE)	# coefEsts
+# load("brainspan_gene_rse.rda", verbose=TRUE)							# rse_geneSpan
+# geneMap = as.data.frame(rowRanges(rse_geneSpan))
+# tabOut_eeb = as.data.frame(coefEsts)
+# tabOut_eeb$MarkerClass =  colnames(tabOut_eeb)[apply(tabOut_eeb, 1, which.max)]
+# tabOut_eeb$Symbol = geneMap$Symbol[match(rownames(tabOut_eeb),rownames(geneMap))]
+# write.csv(tabOut_eeb, file="iPSC_BrainSpan_coefEsts_calibration_Zscore_geneSymbols.csv")
+

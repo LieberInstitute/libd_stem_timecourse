@@ -201,6 +201,20 @@ FALSE  TRUE
 21536  3930
 
 
+
+# ###### Variability across donors
+# modtemp = model.matrix(~0 + COND + Donor + totalAssignedGene, data=pd)
+
+# dgeGenetemp = DGEList(counts = geneCounts, genes = as.data.frame(geneMap))
+# dgeGenetemp = calcNormFactors(dgeGenetemp)
+# vGenetemp = voom(dgeGenetemp, modtemp, plot=FALSE)
+# fitGenetemp = lmFit(vGenetemp)
+# ebGenetemp = ebayes(fitGenetemp)
+# ffGenetemp = topTable(eBayes(fitGenetemp), coef=5:8, n = nrow(dgeGenetemp)) #by donor
+# ffGenetemp$bonf.P.Val = p.adjust(ffGenetemp$P.Value, "bonf")
+# head(ffGenetemp)
+# write.csv(ffGenetemp[1:250,-15], file="donor_variability_topgenes.csv")
+
 # ##############################################
 # ############## voom - exons ##################
 # ##############################################
@@ -645,3 +659,390 @@ write.csv(sigJxnFDR01, file="csv/summary_jxn_classes_FDR01.csv")
 
 
 
+
+
+
+
+
+
+#######################################
+###### Snaptron unannotated junctions
+#######################################
+
+load("voomStats_4features.rda", verbose=TRUE)
+jVoomStats$AD_meanExprs = rowMeans(jRpkm[,which(pd$CONDITION=="ACC_DORSAL(2)")] )
+jVoomStats$NPC_meanExprs = rowMeans(jRpkm[,which(pd$CONDITION=="NPC")] )
+jVoomStats$ROSE_meanExprs = rowMeans(jRpkm[,which(pd$CONDITION=="ROSETTE")] )
+jVoomStats$NEUR_meanExprs = rowMeans(jRpkm[,which(pd$CONDITION=="NEURONS_PLUS_ASTROS")] )
+jVoomStats = jVoomStats[, -c(9:13,22:25)]
+#### AD-NPC
+jSig1 = jVoomStats[order(jVoomStats$"p_NPC-ACC_DORSAL"),]
+jSig1 = jSig1[jSig1$"q_NPC-ACC_DORSAL" < 0.01, ]
+# write.csv(jSig1, file="csv/jxn_voom_FDR01_1_AD_NPC.csv", quote=FALSE)
+#### NPC-ROSETTE
+jSig2 = jVoomStats[order(jVoomStats$"p_ROSETTE-NPC"),]
+jSig2 = jSig2[jSig2$"q_ROSETTE-NPC" < 0.01, ]
+# write.csv(jSig2, file="csv/jxn_voom_FDR01_2_NPC_ROSETTE.csv", quote=FALSE)
+#### ROSETTE-NEURONS
+jSig3 = jVoomStats[order(jVoomStats$"p_NEURON-ROSETTE"),]
+jSig3 = jSig3[jSig3$"q_NEURON-ROSETTE" < 0.01, ]
+# write.csv(jSig3, file="csv/jxn_voom_FDR01_3_ROSETTE_NEURON.csv", quote=FALSE)
+#### OVERALL
+jSig4 = jVoomStats[order(jVoomStats$"P.Value"),]
+jSig4 = jSig4[jSig4$"adj.P.Val" <= 0.01, ]
+
+
+
+
+### snaptron query of top 10 unannotated junctions
+library(recount)
+
+## AD-NPC
+j = jSig1
+
+# AltStartEnd
+jAltFull = j[j$Class == "AltStartEnd" , ]
+jAlt = jAltFull[1:1000,c(1:5,10:12,14:17,19)]
+jGR_alt = makeGRangesFromDataFrame(jAlt)
+sq1 = snaptron_query2(jGR_alt, "srav2")
+
+jAlt = jAltFull[1001:2000,c(1:5,10:12,14:17,19)]
+jGR_alt = makeGRangesFromDataFrame(jAlt)
+sq1001 = snaptron_query2(jGR_alt, "srav2")
+
+jAlt = jAltFull[2001:3325,c(1:5,10:12,14:17,19)]
+jGR_alt = makeGRangesFromDataFrame(jAlt)
+sq2001 = snaptron_query2(jGR_alt, "srav2")
+
+sqAlt1 = c(sq1,sq1001,sq2001)
+
+# ExonSkip
+jSkipFull = j[j$Class == "ExonSkip" , ]
+jSkip = jSkipFull[1:1000,c(1:5,10:12,14:17,19)]
+jGR_Skip = makeGRangesFromDataFrame(jSkip)
+sq1 = snaptron_query2(jGR_Skip, "srav2")
+
+jSkip = jSkipFull[1001:1798,c(1:5,10:12,14:17,19)]
+jGR_Skip = makeGRangesFromDataFrame(jSkip)
+sq1001 = snaptron_query2(jGR_Skip, "srav2")
+
+sqSkip1 = c(sq1,sq1001)
+
+
+## NPC-ROSE
+j = jSig2
+
+# AltStartEnd
+jAltFull = j[j$Class == "AltStartEnd" , ]
+jAlt = jAltFull[1:704,c(1:5,10:12,14:17,19)]
+jGR_alt = makeGRangesFromDataFrame(jAlt)
+sq1 = snaptron_query2(jGR_alt, "srav2")
+
+sqAlt2 = sq1
+
+# ExonSkip
+jSkipFull = j[j$Class == "ExonSkip" , ]
+jSkip = jSkipFull[1:334,c(1:5,10:12,14:17,19)]
+jGR_Skip = makeGRangesFromDataFrame(jSkip)
+sq1 = snaptron_query2(jGR_Skip, "srav2")
+
+sqSkip2 = sq1
+
+
+
+## ROSE-NEURON
+j = jSig3
+
+# AltStartEnd
+jAltFull = j[j$Class == "AltStartEnd" , ]
+jAlt = jAltFull[1:2000,c(1:5,10:12,14:17,19)]
+jGR_alt = makeGRangesFromDataFrame(jAlt)
+sq1 = snaptron_query2(jGR_alt, "srav2")
+
+jAlt = jAltFull[2001:4000,c(1:5,10:12,14:17,19)]
+jGR_alt = makeGRangesFromDataFrame(jAlt)
+sq1001 = snaptron_query2(jGR_alt, "srav2")
+
+jAlt = jAltFull[4001:6000,c(1:5,10:12,14:17,19)]
+jGR_alt = makeGRangesFromDataFrame(jAlt)
+sq2001 = snaptron_query2(jGR_alt, "srav2")
+
+jAlt = jAltFull[6001:7199,c(1:5,10:12,14:17,19)]
+jGR_alt = makeGRangesFromDataFrame(jAlt)
+sq6001 = snaptron_query2(jGR_alt, "srav2")
+
+sqAlt3 = c(sq1,sq1001,sq2001,sq6001)
+
+# ExonSkip
+jSkipFull = j[j$Class == "ExonSkip" , ]
+jSkip = jSkipFull[1:1500,c(1:5,10:12,14:17,19)]
+jGR_Skip = makeGRangesFromDataFrame(jSkip)
+sq1 = snaptron_query2(jGR_Skip, "srav2")
+
+jSkip = jSkipFull[1501:3333,c(1:5,10:12,14:17,19)]
+jGR_Skip = makeGRangesFromDataFrame(jSkip)
+sq1001 = snaptron_query2(jGR_Skip, "srav2")
+
+sqSkip3 = c(sq1,sq1001)
+
+save(sqAlt1, sqSkip1,sqAlt2, sqSkip2,sqAlt3, sqSkip3, file="snaptron_jxn_results.rda")
+
+## ROSE-NEURON
+j = jSig4
+
+# AltStartEnd
+jAltFull = j[j$Class == "AltStartEnd" , ]
+jAlt = jAltFull[1:3000,c(1:5,10:12,14:17,19)]
+jGR_alt = makeGRangesFromDataFrame(jAlt)
+sq1 = snaptron_query2(jGR_alt, "srav2")
+
+jAlt = jAltFull[3001:6000,c(1:5,10:12,14:17,19)]
+jGR_alt = makeGRangesFromDataFrame(jAlt)
+sq1001 = snaptron_query2(jGR_alt, "srav2")
+
+jAlt = jAltFull[6001:9000,c(1:5,10:12,14:17,19)]
+jGR_alt = makeGRangesFromDataFrame(jAlt)
+sq2001 = snaptron_query2(jGR_alt, "srav2")
+
+jAlt = jAltFull[9001:12000,c(1:5,10:12,14:17,19)]
+jGR_alt = makeGRangesFromDataFrame(jAlt)
+sq6001 = snaptron_query2(jGR_alt, "srav2")
+
+jAlt = jAltFull[12001:15002,c(1:5,10:12,14:17,19)]
+jGR_alt = makeGRangesFromDataFrame(jAlt)
+sq9001 = snaptron_query2(jGR_alt, "srav2")
+
+sqAlt4 = c(sq1,sq1001,sq2001,sq6001,sq9001)
+
+# ExonSkip
+jSkipFull = j[j$Class == "ExonSkip" , ]
+jSkip = jSkipFull[1:2000,c(1:5,10:12,14:17,19)]
+jGR_Skip = makeGRangesFromDataFrame(jSkip)
+sq1 = snaptron_query2(jGR_Skip, "srav2")
+
+jSkip = jSkipFull[2001:4000,c(1:5,10:12,14:17,19)]
+jGR_Skip = makeGRangesFromDataFrame(jSkip)
+sq1001 = snaptron_query2(jGR_Skip, "srav2")
+
+jSkip = jSkipFull[4001:6000,c(1:5,10:12,14:17,19)]
+jGR_Skip = makeGRangesFromDataFrame(jSkip)
+sq4001 = snaptron_query2(jGR_Skip, "srav2")
+
+jSkip = jSkipFull[6001:7298,c(1:5,10:12,14:17,19)]
+jGR_Skip = makeGRangesFromDataFrame(jSkip)
+sq6001 = snaptron_query2(jGR_Skip, "srav2")
+
+sqSkip4 = c(sq1,sq1001,sq4001,sq6001)
+
+save(sqAlt4,sqSkip4, file="snaptron_jxn_results2.rda")
+
+
+
+
+
+### Snaptron results
+library(recount)
+m <- all_metadata('sra')
+table(is.na(m$auc))
+
+load("snaptron_jxn_results.rda", verbose=TRUE)
+load("snaptron_jxn_results2.rda", verbose=TRUE)
+
+s = as.data.frame(sqAlt1)
+s$samples_percent = round((s$samples_count / table(is.na(m$auc))[1])*100,2)
+jSig1$AltStartEnd_snaptron_count = s$samples_count[match(jSig1$start, s$start)]
+jSig1$AltStartEnd_snaptron_percent = s$samples_percent[match(jSig1$start, s$start)]
+zeroInd = which(jSig1$Class=="AltStartEnd" & is.na(jSig1$AltStartEnd_snaptron_count))
+jSig1$AltStartEnd_snaptron_count[zeroInd] = jSig1$AltStartEnd_snaptron_percent[zeroInd] = 0
+
+s = as.data.frame(sqSkip1)
+s$samples_percent = round((s$samples_count / table(is.na(m$auc))[1])*100,2)
+jSig1$ExonSkip_snaptron_count = s$samples_count[match(jSig1$start, s$start)]
+jSig1$ExonSkip_snaptron_percent = s$samples_percent[match(jSig1$start, s$start)]
+zeroInd = which(jSig1$Class=="ExonSkip" & is.na(jSig1$ExonSkip_snaptron_count))
+jSig1$ExonSkip_snaptron_count[zeroInd] = jSig1$ExonSkip_snaptron_percent[zeroInd] = 0
+
+
+s = as.data.frame(sqAlt2)
+s$samples_percent = round((s$samples_count / table(is.na(m$auc))[1])*100,2)
+jSig2$AltStartEnd_snaptron_count = s$samples_count[match(jSig2$start, s$start)]
+jSig2$AltStartEnd_snaptron_percent = s$samples_percent[match(jSig2$start, s$start)]
+zeroInd = which(jSig2$Class=="AltStartEnd" & is.na(jSig2$AltStartEnd_snaptron_count))
+jSig2$AltStartEnd_snaptron_count[zeroInd] = jSig2$AltStartEnd_snaptron_percent[zeroInd] = 0
+
+s = as.data.frame(sqSkip2)
+s$samples_percent = round((s$samples_count / table(is.na(m$auc))[1])*100,2)
+jSig2$ExonSkip_snaptron_count = s$samples_count[match(jSig2$start, s$start)]
+jSig2$ExonSkip_snaptron_percent = s$samples_percent[match(jSig2$start, s$start)]
+zeroInd = which(jSig2$Class=="ExonSkip" & is.na(jSig2$ExonSkip_snaptron_count))
+jSig2$ExonSkip_snaptron_count[zeroInd] = jSig2$ExonSkip_snaptron_percent[zeroInd] = 0
+
+
+s = as.data.frame(sqAlt3)
+s$samples_percent = round((s$samples_count / table(is.na(m$auc))[1])*100,2)
+jSig3$AltStartEnd_snaptron_count = s$samples_count[match(jSig3$start, s$start)]
+jSig3$AltStartEnd_snaptron_percent = s$samples_percent[match(jSig3$start, s$start)]
+zeroInd = which(jSig3$Class=="AltStartEnd" & is.na(jSig3$AltStartEnd_snaptron_count))
+jSig3$AltStartEnd_snaptron_count[zeroInd] = jSig3$AltStartEnd_snaptron_percent[zeroInd] = 0
+
+s = as.data.frame(sqSkip3)
+s$samples_percent = round((s$samples_count / table(is.na(m$auc))[1])*100,2)
+jSig3$ExonSkip_snaptron_count = s$samples_count[match(jSig3$start, s$start)]
+jSig3$ExonSkip_snaptron_percent = s$samples_percent[match(jSig3$start, s$start)]
+zeroInd = which(jSig3$Class=="ExonSkip" & is.na(jSig3$ExonSkip_snaptron_count))
+jSig3$ExonSkip_snaptron_count[zeroInd] = jSig3$ExonSkip_snaptron_percent[zeroInd] = 0
+
+
+s = as.data.frame(sqAlt4)
+s$samples_percent = round((s$samples_count / table(is.na(m$auc))[1])*100,2)
+jSig4$AltStartEnd_snaptron_count = s$samples_count[match(jSig4$start, s$start)]
+jSig4$AltStartEnd_snaptron_percent = s$samples_percent[match(jSig4$start, s$start)]
+zeroInd = which(jSig4$Class=="AltStartEnd" & is.na(jSig4$AltStartEnd_snaptron_count))
+jSig4$AltStartEnd_snaptron_count[zeroInd] = jSig4$AltStartEnd_snaptron_percent[zeroInd] = 0
+
+s = as.data.frame(sqSkip4)
+s$samples_percent = round((s$samples_count / table(is.na(m$auc))[1])*100,2)
+jSig4$ExonSkip_snaptron_count = s$samples_count[match(jSig4$start, s$start)]
+jSig4$ExonSkip_snaptron_percent = s$samples_percent[match(jSig4$start, s$start)]
+zeroInd = which(jSig4$Class=="ExonSkip" & is.na(jSig4$ExonSkip_snaptron_count))
+jSig4$ExonSkip_snaptron_count[zeroInd] = jSig4$ExonSkip_snaptron_percent[zeroInd] = 0
+
+
+
+## Overall percentages
+
+snap_mean = snap_sd = matrix(NA, nrow=2, ncol=4, dimnames = list(c("AltStartEnd","ExonSkip"),
+                                    c("AD_NPC","NPC_ROSE","ROSE_NEU","TC")))
+for (i in 1:4) {
+	j = get(paste0('jSig',i))
+	snap_mean[1,i] = mean(j$AltStartEnd_snaptron_percent[which(j$Class == "AltStartEnd")])
+	snap_mean[2,i] = mean(j$ExonSkip_snaptron_percent[which(j$Class == "ExonSkip")])
+	
+	snap_sd[1,i] = sd(j$AltStartEnd_snaptron_percent[which(j$Class == "AltStartEnd")])
+	snap_sd[2,i] = sd(j$ExonSkip_snaptron_percent[which(j$Class == "ExonSkip")])
+}
+round(snap_mean,2)
+            # AD_NPC NPC_ROSE ROSE_NEU    TC
+# AltStartEnd   9.65     8.25     8.80  9.67
+# ExonSkip     11.70     9.72    12.83 13.13
+
+round(snap_sd,2)
+            # AD_NPC NPC_ROSE ROSE_NEU    TC
+# AltStartEnd   9.61     8.89    10.07  9.95
+# ExonSkip     11.09    10.41    14.66 14.26
+
+
+
+## How many were in at least 1% of SRA samples
+table(is.na(m$auc))[1]*0.01
+# 496.57
+
+snap_hund = matrix(NA, nrow=2, ncol=4, dimnames = list(c("AltStartEnd","ExonSkip"),
+                                    c("AD_NPC","NPC_ROSE","ROSE_NEU","TC")))
+for (i in 1:4) {
+	j = get(paste0('jSig',i))
+	ta = table(j$AltStartEnd_snaptron_count >= 497)
+	snap_hund[1,i] = ta[2]/sum(ta)
+	ta = table(j$ExonSkip_snaptron_count >= 497)
+	snap_hund[2,i] = ta[2]/sum(ta)	
+}
+round(snap_hund,3)
+            # AD_NPC NPC_ROSE ROSE_NEU    TC
+# AltStartEnd  0.902    0.869    0.858 0.889
+# ExonSkip     0.958    0.915    0.928 0.941
+
+
+
+
+
+
+
+
+
+
+
+
+
+### snaptron query of top 10 unannotated junctions
+library(recount)
+
+## Not fully novel
+j = jVoomStats
+j = j[order(j$P.Value, decreasing=FALSE),]
+
+jNovel = j[j$Class %in% c("AltStartEnd", "ExonSkip") , ]
+j25 = jNovel[1:25,c(1:5,15:17,19)]
+jGR = makeGRangesFromDataFrame(j25)
+
+snaptron_query(jGR, "srav2")
+# GRanges object with 10 ranges and 14 metadata columns:
+       # seqnames              ranges strand |     type snaptron_id       annotated  left_motif right_motif     left_annotated    right_annotated           samples read_coverage_by_sample samples_count
+          # <Rle>           <IRanges>  <Rle> | <factor>   <integer> <CharacterList> <character> <character>    <CharacterList>    <CharacterList>     <IntegerList>           <IntegerList>     <integer>
+   # [1]    chr22   17505017-17524117      + |  SRAv2:I    49881366               1          GT          AG aC19,gC19,gC38,... aC19,gC19,gC38,...         1,5,6,...            2,355,87,...         10684
+   # [2]    chr12   31298225-31304981      - |  SRAv2:I    16057398               1          GT          AG aC19,gC19,gC38,... aC19,gC19,kG19,...         0,1,2,...             7,26,77,...         22403
+   # [3]     chr3   33592497-33602951      - |  SRAv2:I    52694028               1          GT          AG aC19,gC19,gC38,... aC19,gC19,gC38,...         0,1,2,...           243,43,40,...         25952
+   # [4]    chr15   25261550-25266430      + |  SRAv2:I    24030067               1          GT          AG     aC19,sG19,sG38 aC19,gC19,gC38,... 748,4511,9521,...               1,1,2,...            27
+   # [5]     chr2   40174843-40178386      - |  SRAv2:I    41913753            <NA>          GT          AG aC19,cG19,cG38,... aC19,cG19,cG38,...      8,74,259,...               1,2,3,...           685
+   # [6]    chr19   13865438-13880441      + |  SRAv2:I    37380184               1          GT          AG aC19,gC19,gC38,... aC19,cG19,cG38,...         0,5,7,...               2,3,1,...          8375
+   # [7]    chr12 120061827-120062751      + |  SRAv2:I    18651948            <NA>          GT          AG aC19,cG19,cG38,...                 NA        6,8,15,...           4,299,135,...          2770
+   # [8]    chr12 120062764-120064732      + |  SRAv2:I    18651998            <NA>          GT          AG                 NA aC19,cG19,cG38,...        6,8,15,...           3,307,128,...          2717
+   # [9]     chr2   95884369-95884806      - |  SRAv2:I    43361672            <NA>          GC          AG aC19,gC19,gC38,...                 NA        6,8,15,...               1,1,7,...          1347
+  # [10]    chr17   49043551-49043969      + |  SRAv2:I    32578537               1          GT          AG aC19,cG19,cG38,...          aC19,sG19         0,1,4,...               7,6,7,...          8551
+       # coverage_sum coverage_avg coverage_median source_dataset_id
+          # <integer>    <numeric>       <numeric>         <integer>
+   # [1]       138604       12.973               3                 2
+   # [2]       330541       14.754               5                 2
+   # [3]       404601        15.59               7                 2
+   # [4]           97        3.593               1                 2
+   # [5]         3017        4.404               2                 2
+   # [6]        55877        6.672               2                 2
+   # [7]        40236       14.526               6                 2
+   # [8]        39358       14.486               6                 2
+   # [9]         7834        5.816               2                 2
+  # [10]        81272        9.504               3                 2
+
+
+
+
+## total samples
+library('recount')
+m <- all_metadata('sra')
+table(is.na(m$auc))
+
+# FALSE  TRUE
+# 49657   442
+
+s = as.data.frame(snaptron_query(jGR, "srav2"))
+s$samples_percent = round((s$samples_count / table(is.na(m$auc))[1])*100,2)
+
+j25$snaptron_count = s$samples_count[match(j25$start, s$start)]
+j25$snaptron_percent = s$samples_percent[match(j25$start, s$start)]
+
+# top 25 junction results:
+j25
+                             # seqnames     start       end  width strand       Class startExon endExon newGeneSymbol snaptron_count snaptron_percent
+# chr22:17505017-17524117(+)      chr22  17505017  17524117  19101      +    ExonSkip    538950  538952         CECR2          10684            21.52
+# chr12:31298225-31304981(-)      chr12  31298225  31304981   6757      - AltStartEnd    333702      NA        FAM60A          22403            45.12
+# chr3:33592497-33602951(-)        chr3  33592497  33602951  10455      -    ExonSkip     99905   99902        CLASP2          25952            52.26
+# chr15:25261550-25266430(+)      chr15  25261550  25266430   4881      + AltStartEnd        NA  389443        SNHG14             27             0.05
+# chr2:40174843-40178386(-)        chr2  40174843  40178386   3544      -    ExonSkip     59513   59519        SLC8A1            685             1.38
+# chr19:13865438-13880441(+)      chr19  13865438  13880441  15004      +    ExonSkip    494970  494969        NANOS3           8375            16.87
+# chr12:120061827-120062751(+)    chr12 120061827 120062751    925      + AltStartEnd    354460      NA        BICDL1           2770             5.58
+# chr12:120062764-120064732(+)    chr12 120062764 120064732   1969      + AltStartEnd        NA  354461        BICDL1           2717             5.47
+# chr2:95884369-95884806(-)        chr2  95884369  95884806    438      - AltStartEnd     68400      NA      ANKRD36C           1347             2.71
+# chr17:49043551-49043969(+)      chr17  49043551  49043969    419      + AltStartEnd    460790      NA       IGF2BP1           8551            17.22
+# chr4:157362934-157363434(+)      chr4 157362934 157363434    501      + AltStartEnd        NA  148679         GRIA2           2249             4.53
+# chr2:37317180-37324680(-)        chr2  37317180  37324680   7501      -    ExonSkip     58718   58748         PRKD3          21124            42.54
+# chr5:115906862-115913361(+)      chr5 115906862 115913361   6500      +    ExonSkip    164668  164661         AP3S1           4353             8.77
+# chr15:25247717-25249013(+)      chr15  25247717  25249013   1297      + AltStartEnd    389438      NA        SNHG14           3444             6.94
+# chr6:104957788-104958098(+)      chr6 104957788 104958098    311      + AltStartEnd        NA  194014        LIN28B           3048             6.14
+# chrX:20052989-20055733(-)        chrX  20052989  20055733   2745      - AltStartEnd    553411      NA        MAP7D2           2803             5.64
+# chr9:19200583-19378367(-)        chr9  19200583  19378367 177785      - AltStartEnd        NA  253809          RPS6          38894            78.33
+# chr17:61861566-61863283(-)      chr17  61861566  61863283   1718      - AltStartEnd        NA  464349         BRIP1          13204            26.59
+# chr7:1443725-1444651(-)          chr7   1443725   1444651    927      - AltStartEnd        NA  203032       MICALL2           1883             3.79
+# chr10:92145113-92158048(-)      chr10  92145113  92158048  12936      - AltStartEnd    283983      NA         CPEB3           2122             4.27
+# chr10:87925558-88020571(+)      chr10  87925558  88020571  95014      + AltStartEnd    283413      NA          PTEN             NA               NA
+# chr2:95884919-95886047(-)        chr2  95884919  95886047   1129      - AltStartEnd        NA   68399      ANKRD36C           1807             3.64
+# chr22:50466711-50466977(-)      chr22  50466711  50466977    267      - AltStartEnd    550799      NA          SBF1           2860             5.76
+# chr4:55864387-55866871(+)        chr4  55864387  55866871   2485      + AltStartEnd    136891      NA         EXOC1           1485             2.99
+# chr2:165139609-165140788(-)      chr2 165139609 165140788   1180      - AltStartEnd     78677      NA         SCN3A           2493             5.02

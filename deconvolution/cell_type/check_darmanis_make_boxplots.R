@@ -104,14 +104,20 @@ rownames(mat) = rowData(rse_geneQuake[rownames(coefEsts),])$Symbol
 mainIndex = which(tabOut$MarkerClass %in% c("Endothelial",
 	"Fetal_quiescent", "Fetal_replicating", "iPSC", "Neurons", "NPC"))
 
+# tabOut_eeb = tabOut[mainIndex,]
+# tabOut_eeb$MarkerClass = as.factor(tabOut_eeb$MarkerClass)
+# tabOut_eeb$MarkerClass = factor(tabOut_eeb$MarkerClass,levels(tabOut_eeb$MarkerClass)[c(4,6,3,2,5,1)])
+# tabOut_eeb = tabOut_eeb[order(tabOut_eeb$MarkerClass),]
+# mat_eeb = as.matrix(tabOut_eeb[,4:13])
+# rownames(mat_eeb) = tabOut_eeb$Symbol
 # pdf("singleCellGroup_exprsMatZ_main_eeb.pdf",w=36)
-# print(levelplot(mat[mainIndex,], aspect = "fill", at = theSeq,pretty=TRUE,
+# print(levelplot(mat_eeb, aspect = "fill", at = theSeq,pretty=TRUE,
 	# panel = panel.levelplot.raster, col.regions = my.col,
 		# scales=list(x=list(rot=90,cex=2), y=list(cex=1.4)),
 		# ylab = "Cell Type", xlab = ""))
 # dev.off()
 
-
+# write.csv(tabOut, file="singleCell_iPSC_quake_coefEsts_calibration_Zscale_geneSymbols.csv")
 
 ##################
 # libd stem ######

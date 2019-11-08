@@ -1,11 +1,17 @@
 ## Directories with mostly large files (force add individual files)
 allen_singleCell/
+astro_endo/
 brennand_nature_check/
 data/
 cortecon/
+deneault/
+fluidigm_snps/
 intron/
+lin/
 otherData/
+ribotag/
 rn6_pipe/
+rn6_crossSpecies_pipe/
 scorecard/
 SNX19/
 tc_analysis/
